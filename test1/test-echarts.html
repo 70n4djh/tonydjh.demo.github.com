@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Echarts-DEMO</title>
+    <link rel="stylesheet" href="assets/css/amazeui.css">
+    <style>
+        .chart-container {
+            height: 500px;
+            width: 960px;
+            margin: 0 auto;
+            border: 1px solid #eee;
+            padding: 40px 20px;
+            box-shadow: #bbb 1px 4px 4px;
+        }
+        .center{
+            width: 400px;
+            margin: 10px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="center">
+        <div class="am-g am-fl">
+            <div class="am-u-sm-3">
+                <label>超市名称</label>
+            </div>
+            <div class="am-form-group">
+                <label class="am-radio-inline"><input name="company" type="radio" value="0" data-am-ucheck checked>Walmart</label>
+                <label class="am-radio-inline"><input name="company" type="radio" value="1" data-am-ucheck>Target</label>
+                <label class="am-radio-inline"><input name="company" type="radio" value="2" data-am-ucheck>Coles</label>
+                <label class="am-radio-inline"><input name="company" type="radio" value="3" data-am-ucheck>Kmart</label>
+            </div>
+        </div>
+        <div class="am-g am-u-fr">
+            <div class="am-u-sm-3">
+                <label>年份</label>
+            </div>
+            <div class="am-form-group" id="year">
+                <label class="am-radio-inline am-warning"><input name="year" type="radio" value="0" data-am-ucheck checked>2015</label>
+                <label class="am-radio-inline am-warning"><input name="year" type="radio" value="1" data-am-ucheck>2016</label>
+                <label class="am-radio-inline am-warning"><input name="year" type="radio" value="2" data-am-ucheck>2017</label>
+            </div>
+        </div>
+        <div class="am-cf"></div>
+    </div>
+    <div id="chart2" class="chart-container"></div>
+
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/amazeui.js"></script>
+    <script src="assets/js/echarts/echarts.js"></script>
+    <script type="text/javascript">
+        var val = 0;
+        var comp = 0;
+        var myChart;
+
+        require.config({
+            paths: {
+                echarts: './assets/js/echarts/',
+            }
+        });
+        require(
+                [
+                    'echarts',
+                    'echarts/chart/pie'
+                ],
+                function (ec) {
+                    myChart = ec.init(document.getElementById('chart2'),'infographic');
+                    var option = {
+                        tooltip : {
+                            show: true,
+                            formatter: "{a} <br/>{b} : {c} ({d}%)"
+                        },
+                        legend: {
+                            orient : 'vertical',
+                            x : 'left',
+                            y : 'center',
+                            data:["上装","下装","鞋子","衬衫", "羊毛衫", "短裤", "牛仔裤", "高跟鞋", "凉鞋"]
+                        },
+                        toolbox: {
+                            show : true,
+                            feature : {
+                                mark : {show: true},
+                                dataView : {show: true, readOnly: false},
+                                restore : {show: true},
+                                saveAsImage : {show: true}
+                            }
+                        },
+                        calculable : true,
+                        series : [
+                            {
+                                name:'访问来源',
+                                type:'pie',
+                                radius : 80,
+                                itemStyle : {
+                                    normal : {
+                                        label : {
+                                            position : 'inner',
+                                            formatter : function (params) {
+                                                return (params.percent - 0).toFixed(0) + '%'
+                                            }
+                                        },
+                                        labelLine : {
+                                            show : false
+                                        }
+                                    },
+                                    emphasis : {
+                                        label : {
+                                            show : true,
+                                            formatter : "{b}\n{d}%"
+                                        }
+                                    }
+
+                                },
+                                data:[
+                                    {value:testData.sales[val].sale[comp].data[0]+testData.sales[val].sale[comp].data[1], name:'上装'},
+                                    {value:testData.sales[val].sale[comp].data[2]+testData.sales[val].sale[comp].data[3], name:'下装'},
+                                    {value:testData.sales[val].sale[comp].data[4]+testData.sales[val].sale[comp].data[5], name:'鞋子'}
+                                ]
+                            },
+                            {
+                                name:'访问来源',
+                                type:'pie',
+                                radius : [110, 140],
+                                data:[
+                                    {value:testData.sales[val].sale[comp].data[0], name:'衬衫'},
+                                    {value:testData.sales[val].sale[comp].data[1], name:'羊毛衫'},
+                                    {value:testData.sales[val].sale[comp].data[2], name:'短裤'},
+                                    {value:testData.sales[val].sale[comp].data[3], name:'牛仔裤'},
+                                    {value:testData.sales[val].sale[comp].data[4], name:'高跟鞋'},
+                                    {value:testData.sales[val].sale[comp].data[5], name:'凉鞋'}
+                                ]
+                            }
+
+                        ]
+                    };
+                    myChart.setOption(option)
+                }
+        );
+
+        $("input[name=year]").on('change',function (){
+            val = $("input[name=year]:checked").val();
+            var series = {
+                series : [
+                {
+                    data:[
+                        {value:testData.sales[val].sale[comp].data[0]+testData.sales[val].sale[comp].data[1], name:'上装'},
+                        {value:testData.sales[val].sale[comp].data[2]+testData.sales[val].sale[comp].data[3], name:'下装'},
+                        {value:testData.sales[val].sale[comp].data[4]+testData.sales[val].sale[comp].data[5], name:'鞋子'}
+                    ]
+                },
+                {
+                    data:[
+                        {value:testData.sales[val].sale[comp].data[0], name:'衬衫'},
+                        {value:testData.sales[val].sale[comp].data[1], name:'羊毛衫'},
+                        {value:testData.sales[val].sale[comp].data[2], name:'短裤'},
+                        {value:testData.sales[val].sale[comp].data[3], name:'牛仔裤'},
+                        {value:testData.sales[val].sale[comp].data[4], name:'高跟鞋'},
+                        {value:testData.sales[val].sale[comp].data[5], name:'凉鞋'}
+                    ]
+                }
+            ]
+            };
+            myChart.setSeries(series.series);
+            myChart.restore();
+        });
+
+        $("input[name=company]").on('change',function (){
+            comp = $("input[name=company]:checked").val();
+            var series = {
+                series : [
+                    {
+                        data:[
+                            {value:testData.sales[val].sale[comp].data[0]+testData.sales[val].sale[comp].data[1], name:'上装'},
+                            {value:testData.sales[val].sale[comp].data[2]+testData.sales[val].sale[comp].data[3], name:'下装'},
+                            {value:testData.sales[val].sale[comp].data[4]+testData.sales[val].sale[comp].data[5], name:'鞋子'}
+                        ]
+                    },
+                    {
+                        data:[
+                            {value:testData.sales[val].sale[comp].data[0], name:'衬衫'},
+                            {value:testData.sales[val].sale[comp].data[1], name:'羊毛衫'},
+                            {value:testData.sales[val].sale[comp].data[2], name:'短裤'},
+                            {value:testData.sales[val].sale[comp].data[3], name:'牛仔裤'},
+                            {value:testData.sales[val].sale[comp].data[4], name:'高跟鞋'},
+                            {value:testData.sales[val].sale[comp].data[5], name:'凉鞋'}
+                        ]
+                    }
+                ]
+            };
+            myChart.setSeries(series.series);
+            myChart.restore();
+        });
+
+        var testData = new Object();
+        testData = {
+            "sales" : [
+                {"sale": [
+                    {"data":[500, 280, 450, 105, 101, 276]},
+                    {"data":[252, 340, 452, 120, 231, 56]},
+                    {"data":[570, 300, 48, 100, 80, 210]},
+                    {"data":[210, 102, 42, 203, 303, 73]}]
+
+                },
+                {"sale": [
+                    {"data":[75, 202, 450, 150, 100, 20]},
+                    {"data":[405, 23, 49, 21, 23, 250]},
+                    {"data":[95, 373, 414, 204, 153, 432]},
+                    {"data":[202, 112, 130, 230, 323, 221]}]
+                },
+                {"sale": [
+                    {"data":[325, 250, 244, 176, 154, 270]},
+                    {"data":[615, 321, 142, 123, 203, 42]},
+                    {"data":[102, 231, 140, 200, 405, 77]},
+                    {"data":[220, 114, 133, 89, 125, 76]}]
+                }
+            ]
+        }
+    </script>
+
+</body>
+</html>
